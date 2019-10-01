@@ -5,18 +5,22 @@ const { validateAll } = use('Validator');
 
 class AuthController {
 	async register({ request, response }) {
+		const rules = {
+			email:      'required|email|unique:users',
+			password:   'required|min:6|max:10|confirmed'
+		};
+
 		const errorMessages = {
 			'email.required':       'Este campo é obrigatório.',
 			'email.email':          'Endereço de e-mail inválido.',
 			'email.unique':         'Este e-mail já foi cadastrado.',
 			'password.required':    'Este campo é obrigatório.',
-			'password.min':         'A senha deve ter pelo menos 6 caracteres.'
-		}
+			'password.min':         'A senha deve ter pelo menos 6 caracteres.',
+			'password.max':         'A senha deve ter no máximo 10 caracteres.',
+			'password.confirmed':	'Confirmação de senha incorreta.'
+		};
 
-		const validation = await validateAll(request.all(), {
-			email:      'required|email|unique:users',
-			password:   'required|min:6'
-		}, errorMessages);
+		const validation = await validateAll(request.all(), rules, errorMessages);
 
 		if (validation.fails())
 			return response
