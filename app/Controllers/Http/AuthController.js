@@ -46,11 +46,22 @@ class AuthController {
 		}
 	}
 
-	async authenticate({ request, auth }) {		
+	async authenticate({ request, response, auth }) {		
 		const { email, password } = request.all();
-		const token = await auth.attempt(email, password);
-	
-		return token;
+
+		try {
+			const tokenObj = await auth.attempt(email, password);
+			const user = await User.findBy('email', email);
+
+			return response.status(200).send({
+				id: user.id,
+				name: user.name,
+				email: user.email,
+				token: tokenObj.token
+			});
+		} catch (error) {
+			return response.status(401).send('Usuário e/ou senha inválidos.');
+		}
 	}
 }
 
