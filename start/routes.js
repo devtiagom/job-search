@@ -20,5 +20,7 @@ const Route = use('Route');
 // 	return { greeting: 'Hello world in JSON' }
 // });
 
+Route.get('/validateLogin', () => null).middleware('auth');
+
 Route.post('/register', 'AuthController.register');
 Route.post('/authenticate', 'AuthController.authenticate');
